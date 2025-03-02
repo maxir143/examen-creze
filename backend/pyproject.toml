@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = "examen MFA"
+authors = ["maxiR143 <maximilianovl98@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = {extras = ["standard"], version = "^0.115.11"}
+python-jose = {extras = ["cryptography"], version = "^3.4.0"}
+passlib = "^1.7.4"
+pyotp = "^2.9.0"
+qrcode = "^8.0"
+pillow = "^11.1.0"
+python-dotenv = "^1.0.1"
+peewee = "^3.17.9"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

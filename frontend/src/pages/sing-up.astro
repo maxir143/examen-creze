@@ -1,0 +1,9 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { RegisterForm } from "../components/register_form";
+---
+
+<Layout>
+  <RegisterForm client:load />
+  <a class="text-xs mt-4" href="/login"> already registered? login</a>
+</Layout>

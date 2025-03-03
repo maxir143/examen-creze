@@ -1,0 +1,9 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { LoginForm } from "../components/login_form";
+---
+
+<Layout>
+  <LoginForm client:load />
+  <a class="text-xs mt-4" href="/sing-up">not registered? sign up</a>
+</Layout>

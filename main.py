@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 from fastapi import FastAPI, Header
 from pydantic import BaseModel, Field
@@ -60,12 +61,25 @@ def _login(request: _BasicAuth):
     user = get_user(request.email)
 
     if not user:
-        create_login_record(request.email, request.password, False)
         raise ValueError("User not found")
+
+    if user.account_locked_until:
+        if datetime.fromisoformat(user.account_locked_until) >= datetime.now(
+            tz=timezone.utc
+        ):
+            raise ValueError(
+                f"User account is locked until: {user.account_locked_until} UTC"
+            )
+
+        user.account_locked_until = None
+        user.save()
 
     attemps = get_login_record(request.email, False, 60)
 
-    print(attemps)
+    if attemps >= 5:
+        user.account_locked_until = datetime.now(tz=timezone.utc) + timedelta(hours=1)
+        user.save()
+        raise ValueError("User has been locked for 1 hour")
 
     password_valid = pbkdf2_sha256.verify(request.password, user.password_hash)
 

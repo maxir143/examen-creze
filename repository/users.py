@@ -18,15 +18,17 @@ def get_user(email: str) -> Optional[UserSchema]:
         return None
 
 
-def get_login_record(
-    email: str, failed: bool, from_minutes_ago: int
-) -> Optional[LoginSchema]:
+def get_login_record(email: str, success: bool, from_minutes_ago: int) -> Optional[int]:
     from_date = datetime.now(tz=timezone.utc) - timedelta(minutes=from_minutes_ago)
     try:
         return (
             LoginSchema.select()
-            .where(LoginSchema.created_at > from_date, LoginSchema.email == email)
-            .get()
+            .where(
+                LoginSchema.created_at > from_date,
+                LoginSchema.email == email,
+                LoginSchema.successful == success,
+            )
+            .count()
         )
     except Exception as e:
         print("Login record not found", e)

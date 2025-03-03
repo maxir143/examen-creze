@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 from peewee import Model, CharField, DateTimeField, UUIDField
 from config import Settings
@@ -12,7 +12,7 @@ class UserSchema(Model):
     email = CharField(unique=True)
     password_hash = CharField()
     account_locked_until = DateTimeField(null=True)
-    created_at = DateTimeField(default=datetime.now)
+    created_at = DateTimeField(default=datetime.now(tz=timezone.utc))
 
     class Meta:
         table_name = "users"

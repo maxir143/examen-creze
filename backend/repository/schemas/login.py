@@ -20,7 +20,6 @@ class LoginSchema(Model):
     id = UUIDField(primary_key=True, default=uuid.uuid4)
     email = ForeignKeyField(UserSchema, backref="login_records")
     password_hash = CharField()
-    successful = BooleanField(default=False)
     created_at = DateTimeField(default=datetime.now(tz=timezone.utc))
 
     class Meta:

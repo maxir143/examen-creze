@@ -18,26 +18,28 @@ def get_user(email: str) -> Optional[UserSchema]:
         return None
 
 
-def get_login_record(email: str, success: bool, from_minutes_ago: int) -> Optional[int]:
+def create_login_attempt(email: str, password: str) -> bool:
+    password_hash = pbkdf2_sha256.hash(password)
+    record = LoginSchema.create(email=email, password_hash=password_hash)
+    return bool(record)
+
+
+def delete_login_attempts(email: str) -> bool:
+    try:
+        LoginSchema.delete().where(LoginSchema.email == email).execute()
+        return True
+    except Exception:
+        return False
+
+
+def get_login_attempts(email: str, from_minutes_ago: int) -> Optional[int]:
     from_date = datetime.now(tz=timezone.utc) - timedelta(minutes=from_minutes_ago)
     try:
         return (
             LoginSchema.select()
-            .where(
-                LoginSchema.created_at > from_date,
-                LoginSchema.email == email,
-                LoginSchema.successful == success,
-            )
+            .where(LoginSchema.created_at > from_date, LoginSchema.email == email)
             .count()
         )
     except Exception as e:
         print("Login record not found", e)
         return None
-
-
-def create_login_record(email: str, password: str, successful: bool) -> bool:
-    password_hash = pbkdf2_sha256.hash(password)
-    record = LoginSchema.create(
-        email=email, password_hash=password_hash, successful=successful
-    )
-    return bool(record)

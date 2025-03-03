@@ -7,8 +7,9 @@ from passlib.hash import pbkdf2_sha256
 from middleware.error_handler import error_handler
 from repository.users import (
     create_user,
-    create_login_record,
-    get_login_record,
+    create_login_attempt,
+    delete_login_attempts,
+    get_login_attempts,
     get_user,
 )
 from repository.db import init_db, get_db
@@ -73,10 +74,11 @@ def _login(request: _BasicAuth):
 
         user.account_locked_until = None
         user.save()
+        delete_login_attempts(user.email)
 
-    attemps = get_login_record(request.email, False, 60)
+    failed_attepts = get_login_attempts(request.email, False, 60)
 
-    if attemps >= 5:
+    if failed_attepts >= 5:
         user.account_locked_until = datetime.now(tz=timezone.utc) + timedelta(hours=1)
         user.save()
         raise ValueError("User has been locked for 1 hour")
@@ -84,10 +86,10 @@ def _login(request: _BasicAuth):
     password_valid = pbkdf2_sha256.verify(request.password, user.password_hash)
 
     if not password_valid:
-        create_login_record(request.email, request.password, False)
-        raise ValueError("Password is not valid")
+        create_login_attempt(request.email, request.password, False)
+        raise ValueError(f"Password is not valid, {5 - failed_attepts} attempts left")
 
-    create_login_record(request.email, request.password, True)
+    delete_login_attempts(user.email)
 
     return {
         "message": "User logged in successfully",

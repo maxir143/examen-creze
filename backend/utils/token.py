@@ -12,7 +12,6 @@ class _Token(BaseModel):
     iat: float
     exp: float
     active: bool
-    otp_uri: Optional[str] = None
 
 
 settings = Settings()

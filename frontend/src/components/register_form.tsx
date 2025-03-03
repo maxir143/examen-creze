@@ -1,24 +1,57 @@
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik'
+import { useAuth } from '../utils/useAuth';
+import { navigate } from 'astro:transitions/client';
 
 export function RegisterForm() {
-  return <div className='flex flex-col gap-4 w-full p-4'>
+
+  const { signUp } = useAuth();
+
+  return <div className='flex flex-col gap-4 w-full p-4 h-1/3'>
     <h1 className='text-2xl'>Sign up form!</h1>
     <Formik
       validateOnChange
       validateOnBlur
+      isInitialValid
       initialValues={{ email: '', password: '', confirmPassword: '' }}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
+      validate={values => {
+        const errors: { [field: string]: string } = {}
+        if (!values.email) {
+          errors.email = 'Required'
+        }
+        if (!values.password || values.password.length < 8) {
+          errors.password = 'Required'
+        }
+        if (!values.confirmPassword || values.confirmPassword.length < 8) {
+          errors.confirmPassword = 'Required'
+        }
+        if (values.password !== values.confirmPassword) {
+          errors.confirmPassword = 'Passwords do not match'
+        }
+        return errors
+      }}
+      onSubmit={async (values, { setSubmitting }) => {
+
+        const signUpComplete = await signUp({
+          email: values.email,
+          password: values.password
+        })
+
+        if (!signUpComplete) {
+          alert('Sign up failed, please try again')
+          setSubmitting(false)
+
+        }
+
+        await navigate('/login')
       }}
     >
       {({ isSubmitting, errors }) => (
-        <Form className='grid grid-cols-1 gap-4'>
-          <Field className={`input validator w-full ${errors.email && 'input-error'}`} type="email" name="email" minLength={5} placeholder="Email" />
-          <Field className='input validator w-full' type="password" name="password" minLength={8} placeholder="Password" />
-          <Field className='input validator w-full' type="password" name="confirmPassword" minLength={8} placeholder="Confirm Password" />
+        <Form className='flex flex-col gap-4 justify-between h-full'>
+          <div className='flex flex-col gap-4'>
+            <Field className={`input validator w-full ${errors.email ? 'input-error' : 'validator'}`} type="email" name="email" minLength={5} placeholder="Email" />
+            <Field className={`input  w-full ${errors.password ? 'input-error' : 'validator'}`} name="password" minLength={8} placeholder="Password" />
+            <Field className={`input  w-full ${errors.confirmPassword ? 'input-error' : 'validator'}`} name="confirmPassword" minLength={8} placeholder="Confirm password" />
+          </div>
           <button className='btn w-full' type="submit" disabled={isSubmitting}>
             Submit
           </button>

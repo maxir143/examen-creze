@@ -1,0 +1,10 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { ProtectedRoute } from "../components/protect_route";
+---
+
+<ProtectedRoute client:load>
+  <Layout>
+    <h1>Welcome back!</h1>
+  </Layout>
+</ProtectedRoute>

@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 from fastapi import FastAPI, Header
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from passlib.hash import pbkdf2_sha256
 from middleware.error_handler import error_handler
@@ -31,6 +32,13 @@ async def lifespan(_app):
 
 app = FastAPI(lifespan=lifespan)
 app.middleware("http")(error_handler)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # endpoints
@@ -76,7 +84,7 @@ def _login(request: _BasicAuth):
         user.save()
         delete_login_attempts(user.email)
 
-    failed_attepts = get_login_attempts(request.email, False, 60)
+    failed_attepts = get_login_attempts(request.email, 60)
 
     if failed_attepts >= 5:
         user.account_locked_until = datetime.now(tz=timezone.utc) + timedelta(hours=1)

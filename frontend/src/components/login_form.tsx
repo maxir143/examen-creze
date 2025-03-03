@@ -1,23 +1,51 @@
-import { Field, Form, Formik } from 'formik';
+import { navigate } from 'astro:transitions/client'
+import { Field, Form, Formik } from 'formik'
+import { useAuth } from '../utils/useAuth';
 
 export function LoginForm() {
-  return <div className='flex flex-col gap-4 w-full p-4'>
+
+  const { login, setToken } = useAuth();
+
+  return <div className='flex flex-col gap-4 w-full p-4 h-1/3'>
     <h1 className='text-2xl'>Login form!</h1>
     <Formik
       validateOnChange
       validateOnBlur
+      isInitialValid
       initialValues={{ email: '', password: '' }}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
+      validate={values => {
+        const errors: { [field: string]: string } = {}
+        if (!values.email) {
+          errors.email = 'Required'
+        }
+        if (!values.password || values.password.length < 8) {
+          errors.password = 'Required'
+        }
+        return errors
+      }}
+      onSubmit={async (values, { setSubmitting }) => {
+        setSubmitting(true)
+        const token = await login({
+          email: values.email,
+          password: values.password
+        })
+        console.log(token)
+        if (!token) {
+          alert('Login failed')
+          setSubmitting(false)
+          return
+        }
+        setToken(token)
+        await navigate('/protected')
+        setSubmitting(false)
       }}
     >
       {({ isSubmitting, errors }) => (
-        <Form className='grid grid-cols-1 gap-4'>
-          <Field className={`input validator w-full ${errors.email && 'input-error'}`} type="email" name="email" minLength={5} placeholder="Email" />
-          <Field className='input validator w-full' type="password" name="password" minLength={8} placeholder="Password" />
+        <Form className='flex flex-col gap-4 justify-between h-full'>
+          <div className='flex flex-col gap-4'>
+            <Field className={`input w-full ${errors.email ? 'input-error' : 'validator'}`} type="email" name="email" placeholder="Email" />
+            <Field className={`input w-full ${errors.password ? 'input-error' : 'validator'}`} name="password" minLength={8} placeholder="Password" />
+          </div>
           <button className='btn w-full' type="submit" disabled={isSubmitting}>
             Submit
           </button>

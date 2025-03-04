@@ -26,6 +26,14 @@ def register_token(email: str, token_id: str):
     user.save()
 
 
+def remove_token(email: str):
+    user = get_user(email)
+    if not user:
+        raise ValueError("User not found")
+    user.token_id = None
+    user.save()
+
+
 def create_login_attempt(email: str, password: str) -> bool:
     password_hash = pbkdf2_sha256.hash(password)
     record = LoginSchema.create(email=email, password_hash=password_hash)

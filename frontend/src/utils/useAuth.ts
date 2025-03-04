@@ -8,7 +8,9 @@ type _Token = {
   email: string;
   iat: number;
   exp: number;
+  refresh_exp: number;
   active: boolean;
+  id: string;
 };
 
 type _BasicAuth = {
@@ -18,6 +20,17 @@ type _BasicAuth = {
 
 export function useAuth() {
   const { token, setToken, removeToken } = useStore();
+
+  useEffect(() => {
+    refreshToken().then(({ error, token }) => {
+      if (token) {
+        setToken(token);
+      }
+      if (error) {
+        console.error(error);
+      }
+    });
+  }, []);
 
   function getToken(): _Token | null {
     if (!token) return null;
@@ -118,6 +131,32 @@ export function useAuth() {
       });
   }
 
+  async function refreshToken(): Promise<
+    { token: string; error: null } | { token: null; error: string }
+  > {
+    const { error, token } = verifyToken();
+    if (error) return { token: null, error: error };
+    if (!token) return { token: null, error: "No token found" };
+    return await fetch(`${API_URL}/refresh-token`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(await res.text());
+        }
+        const res_json: { token: string; message: string } = await res.json();
+        return { token: res_json.token, error: null };
+      })
+      .catch((error) => {
+        console.error(error);
+        return { token: null, error: error.message };
+      });
+  }
+
   async function getOTPQRCode(): Promise<
     { otp_uri: string; error: null } | { otp_uri: null; error: string }
   > {
@@ -145,6 +184,23 @@ export function useAuth() {
       });
   }
 
+  async function logout() {
+    const { error, token } = verifyToken();
+    if (error) return { otp_uri: null, error: error };
+    if (!token) return { otp_uri: null, error: "No token found" };
+
+    await fetch(`${API_URL}/logout`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+    }).catch((error) => {
+      console.error(error);
+    });
+    removeToken();
+  }
+
   function verifyToken():
     | { token: string; error: null }
     | { token: null; error: string } {
@@ -169,5 +225,7 @@ export function useAuth() {
     verifyOTP,
     getOTPQRCode,
     verifyToken,
+    refreshToken,
+    logout,
   };
 }

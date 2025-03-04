@@ -13,6 +13,7 @@ from repository.users import (
     get_login_attempts,
     get_user,
     register_token,
+    remove_token,
 )
 from repository.db import init_db, get_db
 from utils.token import activate_token, extract_token, get_otp_uri, session_token
@@ -119,6 +120,7 @@ def _activate_token(
     active_token = activate_token(x_token, otp_code)
     token_object = extract_token(active_token)
     register_token(token_object.email, token_object.id)
+
     return {
         "message": "User logged in successfully",
         "token": active_token,
@@ -127,30 +129,35 @@ def _activate_token(
 
 @app.get("/logout")
 def _logout(x_token: Annotated[str | None, Header()] = None):
-    return {"message": "User logout successfully"}
-
-
-@app.get("/test-endpoint")
-def _test_endpoint(x_token: Annotated[str | None, Header()] = None):
     token = extract_token(x_token)
-    if not token.active:
-        raise ValueError("Token is not active")
-    return {"message": "Token is active"}
+    user = get_user(token.email)
+    if not user:
+        raise ValueError("User not found")
+    if str(user.token_id) != str(token.id):
+        raise ValueError("Token is not valid, please login again")
+    remove_token(token.email)
+    return {"message": "User logout successfully"}
 
 
 @app.get("/refresh-token")
 def _refresh_token(x_token: Annotated[str | None, Header()] = None):
     token = extract_token(x_token)
+
+    if not token.active:
+        raise ValueError("Token is not active")
+
+    if token.refresh_exp < datetime.now(tz=timezone.utc).timestamp():
+        raise ValueError("Token is expired")
+
     user = get_user(token.email)
     if not user:
         raise ValueError("User not found")
-
-    if user.token_id != token.id:
+    print(user.token_id, token.id)
+    if str(user.token_id) != str(token.id):
         raise ValueError("Refresh token is not valid, please login again")
 
     new_token = session_token(str(user.id), user.email, active=True)
     new_token_object = extract_token(new_token)
+    register_token(new_token_object.email, new_token_object.id)
 
-    register_token(user.email, new_token_object.id)
-
-    return {"message": "Token refreshed successfully", token: new_token}
+    return {"message": "Token refreshed successfully", "token": new_token}

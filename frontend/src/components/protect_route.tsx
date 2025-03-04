@@ -4,7 +4,7 @@ import { navigate } from "astro:transitions/client";
 
 
 export function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Element | undefined {
-  const { getToken, removeToken, verifyToken } = useAuth();
+  const { getToken, removeToken, verifyToken, refreshToken } = useAuth();
 
   const token_object = getToken();
 
@@ -24,7 +24,6 @@ export function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Ele
     removeToken()
     alert(error);
     navigate("/login");
-    return
   }
 
   return children

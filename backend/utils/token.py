@@ -31,6 +31,7 @@ class _Token(BaseModel):
     email: str
     iat: float
     exp: float
+    refresh_exp: float
     active: bool
     id: StrUUID
 
@@ -51,13 +52,13 @@ def session_token(
     token_id = uuid.uuid4()
 
     token = _Token(
+        id=token_id,
         sub=user_id,
         email=email,
         iat=created_at.timestamp(),
         exp=expires_at.timestamp(),
         refresh_exp=refresh_expires_at.timestamp(),
         active=active,
-        id=token_id,
     )
     return jwt.encode(token.model_dump(), settings.TOKEN_SECRET_KEY, algorithm="HS256")
 

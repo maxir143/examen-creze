@@ -12,7 +12,7 @@ class UserSchema(Model):
     email = CharField(unique=True)
     password_hash = CharField()
     account_locked_until = DateTimeField(null=True)
-    token_id = UUIDField()
+    token_id = UUIDField(null=True)
     created_at = DateTimeField(default=datetime.now(tz=timezone.utc))
 
     class Meta:

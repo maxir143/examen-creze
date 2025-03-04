@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+from passlib.hash import pbkdf2_sha256
 from repository.schemas.user import UserSchema
 from repository.schemas.login import LoginSchema
-from passlib.hash import pbkdf2_sha256
 
 
 def create_user(email: str, password: str) -> bool:

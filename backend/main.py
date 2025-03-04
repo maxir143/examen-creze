@@ -1,7 +1,7 @@
-from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
-from fastapi import FastAPI, Header
+from contextlib import asynccontextmanager
+from fastapi import APIRouter, FastAPI, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from passlib.hash import pbkdf2_sha256
@@ -23,16 +23,17 @@ from config import Settings
 settings = Settings()
 
 
-# lifespan
 @asynccontextmanager
 async def lifespan(_app):
-    # On startup
     init_db(get_db(settings.DATABASE_NAME))
     yield
-    # On shutdown
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    docs_url=f"{settings.BASE_PATH}/docs",
+    openapi_url=f"{settings.BASE_PATH}/docs/json",
+)
 app.middleware("http")(error_handler)
 app.add_middleware(
     CORSMiddleware,
@@ -43,7 +44,6 @@ app.add_middleware(
 )
 
 
-# endpoints
 class _BasicAuth(BaseModel):
     email: str = Field(
         pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
@@ -60,15 +60,11 @@ class _TokenAuth(BaseModel):
     token: str
 
 
-@app.post("/sing-up")
-def _sing_up(request: _BasicAuth):
-    if not create_user(email=request.email, password=request.password):
-        raise ValueError("User cant be created")
-    return {"message": f"User registered successfully with email: {request.email}"}
+api_router = APIRouter(prefix=settings.BASE_PATH)
 
 
-@app.post("/login")
-def _login(request: _BasicAuth):
+@api_router.post("/user/login", tags=["user"])
+def _user_login(request: _BasicAuth):
     user = get_user(request.email)
 
     if not user:
@@ -107,14 +103,15 @@ def _login(request: _BasicAuth):
     }
 
 
-@app.get("/activate-otp")
-def _activate_otp(x_token: Annotated[str | None, Header()] = None):
-    otp_uri = get_otp_uri(x_token)
-    return {"message": "OTP url generated successfully", "otp_uri": otp_uri}
+@api_router.post("/user/sing-up", tags=["user"])
+def _user_sing_up(request: _BasicAuth):
+    if not create_user(email=request.email, password=request.password):
+        raise ValueError("User cant be created")
+    return {"message": f"User registered successfully with email: {request.email}"}
 
 
-@app.get("/activate-token/{otp_code}")
-def _activate_token(
+@api_router.get("/token/activate/{otp_code}", tags=["token"])
+def _token_activate(
     otp_code: str, x_token: Annotated[str | None, Header()] = None
 ) -> dict:
     active_token = activate_token(x_token, otp_code)
@@ -127,8 +124,8 @@ def _activate_token(
     }
 
 
-@app.get("/logout")
-def _logout(x_token: Annotated[str | None, Header()] = None):
+@api_router.get("/user/log-out", tags=["user"])
+def _user_log_out(x_token: Annotated[str | None, Header()] = None):
     token = extract_token(x_token)
     user = get_user(token.email)
     if not user:
@@ -139,8 +136,8 @@ def _logout(x_token: Annotated[str | None, Header()] = None):
     return {"message": "User logout successfully"}
 
 
-@app.get("/refresh-token")
-def _refresh_token(x_token: Annotated[str | None, Header()] = None):
+@api_router.get("/token/refresh", tags=["token"])
+def _token_refresh(x_token: Annotated[str | None, Header()] = None):
     token = extract_token(x_token)
 
     if not token.active:
@@ -161,3 +158,12 @@ def _refresh_token(x_token: Annotated[str | None, Header()] = None):
     register_token(new_token_object.email, new_token_object.id)
 
     return {"message": "Token refreshed successfully", "token": new_token}
+
+
+@api_router.get("/otp/sync", tags=["OTP"])
+def _otp_sync(x_token: Annotated[str | None, Header()] = None):
+    otp_uri = get_otp_uri(x_token)
+    return {"message": "OTP url generated successfully", "otp_uri": otp_uri}
+
+
+app.include_router(api_router)

@@ -1,11 +1,10 @@
+from typing import Annotated, Union
+from uuid import UUID, uuid4
 from datetime import datetime, timezone, timedelta
-import uuid
 from pydantic import BaseModel, PlainSerializer, PlainValidator, WithJsonSchema
 from jose import jwt
-from config import Settings
 import pyotp
-from typing import Annotated, Union
-from uuid import UUID
+from config import Settings
 
 
 StrUUID = Annotated[
@@ -49,7 +48,7 @@ def session_token(
     refresh_expires_at = created_at + timedelta(
         minutes=settings.REFRESH_TOKEN_EXPIRATION_MINUTES
     )
-    token_id = uuid.uuid4()
+    token_id = uuid4()
 
     token = _Token(
         id=token_id,

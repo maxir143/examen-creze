@@ -43,7 +43,7 @@ export function useAuth() {
   }: _BasicAuth): Promise<
     { token: string; error: null } | { token: null; error: string }
   > {
-    return await fetch(`${API_URL}/login`, {
+    return await fetch(`${API_URL}/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export function useAuth() {
     email,
     password,
   }: _BasicAuth): Promise<{ success: boolean; error: string | null }> {
-    return await fetch(`${API_URL}/sing-up`, {
+    return await fetch(`${API_URL}/user/sing-up`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -99,7 +99,7 @@ export function useAuth() {
     if (error) return { token: null, error: error };
     if (!token) return { token: null, error: "No token found" };
 
-    return await fetch(`${API_URL}/activate-token/${otp_code}`, {
+    return await fetch(`${API_URL}/token/activate/${otp_code}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -137,7 +137,7 @@ export function useAuth() {
     const { error, token } = verifyToken();
     if (error) return { token: null, error: error };
     if (!token) return { token: null, error: "No token found" };
-    return await fetch(`${API_URL}/refresh-token`, {
+    return await fetch(`${API_URL}/token/refresh`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -164,7 +164,7 @@ export function useAuth() {
     if (error) return { otp_uri: null, error: error };
     if (!token) return { otp_uri: null, error: "No token found" };
 
-    return await fetch(`${API_URL}/activate-otp`, {
+    return await fetch(`${API_URL}/otp/sync`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -189,7 +189,7 @@ export function useAuth() {
     if (error) return { otp_uri: null, error: error };
     if (!token) return { otp_uri: null, error: "No token found" };
 
-    await fetch(`${API_URL}/logout`, {
+    await fetch(`${API_URL}/user/log-out`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

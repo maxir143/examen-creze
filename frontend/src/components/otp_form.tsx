@@ -4,7 +4,7 @@ import { useAuth } from '../utils/useAuth';
 import { use, useEffect } from 'react';
 
 export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: string[] }) {
-  const { verifyOTP, setToken } = useAuth();
+  const { verifyOTP, setToken, verifyToken } = useAuth();
 
   const initialValues: { [field: string]: string } = fields.map((field) => (
     { [`_otp_${field}`]: "" }
@@ -27,6 +27,10 @@ export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: 
 
   useEffect(() => {
     focusElement(`_otp_${fields[0]}`)
+    const { token } = verifyToken()
+    if (!token) {
+      navigate('/login')
+    }
   }, [])
 
   return <div className='flex flex-col gap-4 w-full h-1/3'>

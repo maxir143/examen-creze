@@ -9,15 +9,17 @@ services:
       - OTP_SECRET_KEY="JBSWY3DPEHPK3PXP"
       - OTP_ISSUER_NAME="creze.com"
       - TOKEN_EXPIRATION_MINUTES=5
+    volumes:
+      - ./backend/database.db:/database.db
     ports:
-      - 8000:8000
+      - 3001:8000
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     environment:
-      - API_URL=http://backend:8000
+      - API_URL=http://localhost:3001
     ports:
-      - 3000:3000
+      - 3000:8000
     depends_on:
       - backend

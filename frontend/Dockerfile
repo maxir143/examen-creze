@@ -1,23 +1,14 @@
-# Use a Node.js base image
-FROM node:18-alpine
-
-# Set the working directory in the container
+FROM node:lts AS runtime
 WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock)
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the Astro project
 COPY . .
 
-# Build the Astro project
+ENV API_URL=${API_URL}
+
+RUN npm install
 RUN npm run build
 
-# Expose the port Astro uses (default: 3000)
-EXPOSE 3000
 
-# Start the Astro server
-CMD ["npm", "run", "preview"]
+EXPOSE 8000
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "8000"]

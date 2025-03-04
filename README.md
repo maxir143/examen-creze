@@ -45,15 +45,17 @@
 
 ### Levantar proyecto con docker
 
-1. descargar el proyecto con el comando `git clone`
+1. Descargar el proyecto con el comando `git clone https://github.com/maxir143/examen-creze.git`
 
-2. revisar el documento docker-compose.yaml y corroborar que las variables de entorno sean las deseadas.
+2. Ingresa a la carpeta `cd examen-creze`
 
-3. ingresar el comando `docker compose build` y esperar a que la instalación de ambos módulos finalice.
+3. Revisar el documento **docker-compose.yaml** y corroborar que las variables de entorno sean las deseadas.
 
-4. ingresar el comando `docker compose up -d` y verificar que ambos contenedores corran exitosamente.
+4. Ingresar el comando `docker compose build` y esperar a que la instalación de ambos módulos finalice.
 
-5. visitar el frontend en [localhost:8000](http://localhost:8000/)
+5. Ingresar el comando `docker compose up -d` y verificar que ambos contenedores corran exitosamente.
+
+6. Visitar el frontend en [localhost:8000](http://localhost:8000/)
 
 > Para visitar la documentación técnica del backend visitar [documentación](http://localhost:3000/api/docs)
 

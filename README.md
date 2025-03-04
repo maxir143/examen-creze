@@ -55,9 +55,9 @@
 
 5. Ingresar el comando `docker compose up -d` y verificar que ambos contenedores corran exitosamente.
 
-6. Visitar el frontend en [localhost](http://localhost:3005/).
+6. Visitar el frontend desplegado en [localhost](http://localhost:3005/).
 
-> Para visitar la documentación técnica del backend visitar [documentación](http://localhost:3001/api/docs).
+> Para mas información sobre la documentación técnica de la api visitar [documentación](http://localhost:3001/api/docs).
 
 ### configuración OTP
 

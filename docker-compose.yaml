@@ -4,14 +4,12 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      - DATABASE_NAME="database.db"
-      - TOKEN_SECRET_KEY="NTNv7j0TuYARvmNMmWXo6fKvM4o6nv/aUi9ryX38ZH+L1bkrnD1ObOQ8JAUmHCBq7Iy7otZcyAagBLHVKvvYaIpmMuxmARQ97jUVG16Jkpkp1wXOPsrF9zwew6TpczyHkHgX5EuLg2MeBuiT/qJACs1J0apruOOJCg/gOtkjB4c="
+      - DATABASE_NAME=database.db
+      - TOKEN_SECRET_KEY=NTNv7j0TuYARvmNMmWXo6fKvM4o6nv/aUi9ryX38ZH+L1bkrnD1ObOQ8JAUmHCBq7Iy7otZcyAagBLHVKvvYaIpmMuxmARQ97jUVG16Jkpkp1wXOPsrF9zwew6TpczyHkHgX5EuLg2MeBuiT/qJACs1J0apruOOJCg/gOtkjB4c=
       - REFRESH_TOKEN_EXPIRATION_MINUTES=10080
       - TOKEN_EXPIRATION_MINUTES=5
-      - OTP_SECRET_KEY="JBSWY3DPEHPK3PXP"
-      - OTP_ISSUER_NAME="creze.com"
-    volumes:
-      - ./backend/database.db:/database.db
+      - OTP_SECRET_KEY=JBSWY3DPEHPK3PXP
+      - OTP_ISSUER_NAME=example.com
     ports:
       - 3001:8000
   frontend:

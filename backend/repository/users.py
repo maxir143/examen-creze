@@ -18,6 +18,14 @@ def get_user(email: str) -> Optional[UserSchema]:
         return None
 
 
+def register_token(email: str, token_id: str):
+    user = get_user(email)
+    if not user:
+        raise ValueError("User not found")
+    user.token_id = token_id
+    user.save()
+
+
 def create_login_attempt(email: str, password: str) -> bool:
     password_hash = pbkdf2_sha256.hash(password)
     record = LoginSchema.create(email=email, password_hash=password_hash)

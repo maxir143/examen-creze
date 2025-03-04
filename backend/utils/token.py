@@ -1,8 +1,29 @@
 from datetime import datetime, timezone, timedelta
-from pydantic import BaseModel
+import uuid
+from pydantic import BaseModel, PlainSerializer, PlainValidator, WithJsonSchema
 from jose import jwt
 from config import Settings
 import pyotp
+from typing import Annotated, Union
+from uuid import UUID
+
+
+StrUUID = Annotated[
+    UUID,
+    PlainSerializer(str, return_type=str),
+    PlainValidator(
+        lambda x: UUID(x, version=4) if isinstance(x, str) else x,
+        json_schema_input_type=Union[str, UUID],
+    ),
+    WithJsonSchema(
+        {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID v4",
+        },
+        mode="serialization",
+    ),
+]
 
 
 class _Token(BaseModel):
@@ -11,6 +32,7 @@ class _Token(BaseModel):
     iat: float
     exp: float
     active: bool
+    id: StrUUID
 
 
 settings = Settings()
@@ -19,18 +41,23 @@ settings = Settings()
 def session_token(
     user_id: str,
     email: str,
-    expiration_minutes: int = settings.TOKEN_EXPIRATION_MINUTES,
     active: bool = False,
 ) -> str:
     created_at = datetime.now(timezone.utc)
-    expires_at = created_at + timedelta(minutes=expiration_minutes)
+    expires_at = created_at + timedelta(minutes=settings.TOKEN_EXPIRATION_MINUTES)
+    refresh_expires_at = created_at + timedelta(
+        minutes=settings.REFRESH_TOKEN_EXPIRATION_MINUTES
+    )
+    token_id = uuid.uuid4()
 
     token = _Token(
         sub=user_id,
         email=email,
         iat=created_at.timestamp(),
         exp=expires_at.timestamp(),
+        refresh_exp=refresh_expires_at.timestamp(),
         active=active,
+        id=token_id,
     )
     return jwt.encode(token.model_dump(), settings.TOKEN_SECRET_KEY, algorithm="HS256")
 

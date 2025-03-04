@@ -8,7 +8,9 @@
     <title>Astro Basics</title>
   </head>
   <body>
-    <slot />
+    <div class="slot">
+      <slot />
+    </div>
   </body>
 </html>
 
@@ -22,5 +24,14 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+
+  .slot {
+    height: 100%;
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 </style>

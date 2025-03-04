@@ -1,10 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { ProtectedRoute } from "../components/protect_route";
+import { LogOutButton } from "../components/log_out_button";
 ---
 
-<ProtectedRoute client:load>
+<ProtectedRoute client:only>
   <Layout>
-    <h1>Welcome back!</h1>
+    <h1 class="text-2xl text-center">Welcome back!</h1>
+    <LogOutButton client:load />
   </Layout>
 </ProtectedRoute>

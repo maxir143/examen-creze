@@ -1,6 +1,7 @@
 import { useState, useEffect, use } from "react";
 import { API_URL } from "astro:env/client";
 import { jwtDecode } from "jwt-decode";
+import { useStore } from "./store";
 
 type _Token = {
   sub: string;
@@ -16,21 +17,9 @@ type _BasicAuth = {
 };
 
 export function useAuth() {
-  const [token, setToken] = useState<string | null>(null);
+  const { token, setToken, removeToken } = useStore();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setToken(token);
-  }, []);
-
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem("token", token);
-    }
-  }, [token]);
-
-  function getToken(): null | _Token {
-    if (!token) return null;
+  function getToken(token: string): _Token {
     return jwtDecode(token) as _Token;
   }
 
@@ -59,7 +48,7 @@ export function useAuth() {
         return res_json.token;
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         return null;
       });
   }
@@ -74,13 +63,12 @@ export function useAuth() {
     })
       .then(async (res) => {
         if (res.ok) {
-          console.log(await res.json());
           return true;
         }
         throw new Error(await res.text());
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         return false;
       });
   }
@@ -89,7 +77,7 @@ export function useAuth() {
 
   async function verifyOTP(otp_code: number): Promise<string | null> {
     if (!token) return null;
-    return await fetch(`${API_URL}/sing-up/${otp_code}`, {
+    return await fetch(`${API_URL}/activate-token/${otp_code}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -110,10 +98,10 @@ export function useAuth() {
         return res_json.token;
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         return null;
       });
   }
 
-  return { token, setToken, signUp, login, getToken, verifyOTP };
+  return { token, setToken, removeToken, signUp, login, getToken, verifyOTP };
 }

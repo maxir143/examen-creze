@@ -4,18 +4,20 @@ import { navigate } from "astro:transitions/client";
 
 
 export function ProtectedRoute({ children }: { children: JSX.Element }) {
-  const { getToken } = useAuth();
+  const { getToken, token } = useAuth();
 
-  const token = getToken();
-
-  console.log(token);
+  console.log("token", token);
 
   if (!token) {
     navigate("/login");
     return
   }
 
-  if (!token.active) {
+  const token_object = getToken(token);
+
+  console.log(token_object.active);
+
+  if (token_object.active === false) {
     navigate("/otp");
     return
   }

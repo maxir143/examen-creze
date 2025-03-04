@@ -29,7 +29,6 @@ export function LoginForm() {
           email: values.email,
           password: values.password
         })
-        console.log(token)
         if (!token) {
           alert('Login failed')
           setSubmitting(false)

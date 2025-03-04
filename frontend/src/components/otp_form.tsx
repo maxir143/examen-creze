@@ -33,7 +33,6 @@ export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: 
     <Formik
       validateOnChange
       validateOnBlur
-      isInitialValid
       initialValues={initialValues}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         setSubmitting(true)

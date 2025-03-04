@@ -23,7 +23,7 @@ export default defineConfig({
       API_URL: envField.string({
         context: "client",
         access: "public",
-        default: "http://127.0.0.1:8000",
+        default: "http://127.0.0.1:8000/api",
       }),
     },
   },

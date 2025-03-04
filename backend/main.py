@@ -13,6 +13,7 @@ from models.response import ErrorResponse
 from repository.db import init_db, get_db
 from config import Settings
 from api.v1 import v1_router
+from api.status import status_router
 
 settings = Settings()
 
@@ -41,6 +42,10 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+app.include_router(
+    status_router,
+    prefix=settings.BASE_PATH,
 )
 app.include_router(
     v1_router,

@@ -11,7 +11,6 @@ export function LoginForm() {
     <Formik
       validateOnChange
       validateOnBlur
-      isInitialValid
       initialValues={{ email: '', password: '' }}
       validate={values => {
         const errors: { [field: string]: string } = {}

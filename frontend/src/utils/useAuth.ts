@@ -43,7 +43,7 @@ export function useAuth() {
   }: BasicAuth): Promise<
     { token: string; error: null } | { token: null; error: string }
   > {
-    return await fetch(`${API_URL}/user/login`, {
+    return await fetch(`${API_URL}/v1/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export function useAuth() {
     email,
     password,
   }: BasicAuth): Promise<{ success: boolean; error: string | null }> {
-    return await fetch(`${API_URL}/user/sing-up`, {
+    return await fetch(`${API_URL}/v1/user/sing-up`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -99,7 +99,7 @@ export function useAuth() {
     if (error) return { token: null, error: error };
     if (!token) return { token: null, error: "No token found" };
 
-    return await fetch(`${API_URL}/token/activate/${otp_code}`, {
+    return await fetch(`${API_URL}/v1/token/activate/${otp_code}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -137,7 +137,7 @@ export function useAuth() {
     const { error, token } = verifyToken();
     if (error) return { token: null, error: error };
     if (!token) return { token: null, error: "No token found" };
-    return await fetch(`${API_URL}/token/refresh`, {
+    return await fetch(`${API_URL}/v1/token/refresh`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -164,7 +164,7 @@ export function useAuth() {
     if (error) return { otp_uri: null, error: error };
     if (!token) return { otp_uri: null, error: "No token found" };
 
-    return await fetch(`${API_URL}/otp/sync`, {
+    return await fetch(`${API_URL}/v1/otp/sync`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -189,7 +189,7 @@ export function useAuth() {
     if (error) return { otp_uri: null, error: error };
     if (!token) return { otp_uri: null, error: "No token found" };
 
-    await fetch(`${API_URL}/user/log-out`, {
+    await fetch(`${API_URL}/v1/user/log-out`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

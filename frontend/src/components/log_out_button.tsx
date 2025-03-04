@@ -1,5 +1,5 @@
 import { navigate } from "astro:transitions/client";
-import { useAuth } from "../utils/useAuth";
+import { useAuth } from "@/utils/useAuth";
 import { useState } from "react";
 
 export function LogOutButton() {

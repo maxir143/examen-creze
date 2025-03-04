@@ -1,5 +1,4 @@
 from datetime import datetime, timezone, timedelta
-from typing import Optional
 from pydantic import BaseModel
 from jose import jwt
 from config import Settings
@@ -18,7 +17,10 @@ settings = Settings()
 
 
 def session_token(
-    user_id: str, email: str, expiration_minutes: int = 60 * 60, active: bool = False
+    user_id: str,
+    email: str,
+    expiration_minutes: int = settings.TOKEN_EXPIRATION_MINUTES,
+    active: bool = False,
 ) -> str:
     created_at = datetime.now(timezone.utc)
     expires_at = created_at + timedelta(minutes=expiration_minutes)

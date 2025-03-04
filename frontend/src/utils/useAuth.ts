@@ -73,8 +73,6 @@ export function useAuth() {
       });
   }
 
-  function verifyToken() {}
-
   async function verifyOTP(otp_code: number): Promise<string | null> {
     if (!token) return null;
     return await fetch(`${API_URL}/activate-token/${otp_code}`, {
@@ -103,5 +101,36 @@ export function useAuth() {
       });
   }
 
-  return { token, setToken, removeToken, signUp, login, getToken, verifyOTP };
+  async function getOTPQRCode(): Promise<string | null> {
+    if (!token) return null;
+    return await fetch(`${API_URL}/activate-otp`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(await res.text());
+        }
+        const res_json: { otp_uri: string; message: string } = await res.json();
+        return res_json.otp_uri;
+      })
+      .catch((error) => {
+        console.error(error);
+        return null;
+      });
+  }
+
+  return {
+    token,
+    setToken,
+    removeToken,
+    signUp,
+    login,
+    getToken,
+    verifyOTP,
+    getOTPQRCode,
+  };
 }

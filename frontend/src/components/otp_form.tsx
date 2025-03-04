@@ -29,7 +29,7 @@ export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: 
     focusElement(`_otp_${fields[0]}`)
   }, [])
 
-  return <div className='flex flex-col gap-4 w-full p-4 h-1/3'>
+  return <div className='flex flex-col gap-4 w-full h-1/3'>
     <Formik
       validateOnChange
       validateOnBlur
@@ -54,7 +54,7 @@ export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: 
       {({ isSubmitting, values, setValues, errors }) => (
         <Form className='flex flex-col gap-4 justify-between h-full'>
           <input />
-          <div className='grid grid-cols-6 gap-4'>
+          <div className='grid grid-cols-6 gap-4 max-w-[500px] mx-auto'>
             {
               Object.keys(initialValues).map((_, i) => (
                 <Field

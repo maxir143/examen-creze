@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     DATABASE_NAME: str
     TOKEN_SECRET_KEY: str
+    TOKEN_EXPIRATION_MINUTES: int = 60 * 24
     OTP_SECRET_KEY: str
     OTP_ISSUER_NAME: str
 

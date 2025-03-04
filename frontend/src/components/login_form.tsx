@@ -6,7 +6,7 @@ export function LoginForm() {
 
   const { login, setToken } = useAuth();
 
-  return <div className='flex flex-col gap-4 w-full p-4 h-1/3'>
+  return <div className='flex flex-col gap-4 w-full h-1/3'>
     <h1 className='text-2xl'>Login form!</h1>
     <Formik
       validateOnChange

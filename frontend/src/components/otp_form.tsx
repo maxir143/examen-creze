@@ -1,10 +1,10 @@
 import { navigate } from 'astro:transitions/client'
 import { Field, Form, Formik } from 'formik'
 import { useAuth } from '../utils/useAuth';
-import { use, useEffect } from 'react';
+import { useEffect } from 'react';
 
 export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: string[] }) {
-  const { verifyOTP, setToken, getToken } = useAuth();
+  const { verifyOTP, setToken } = useAuth();
 
   const initialValues: { [field: string]: string } = fields.map((field) => (
     { [`_otp_${field}`]: "" }

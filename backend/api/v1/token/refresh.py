@@ -24,11 +24,8 @@ def _token_refresh(x_token: Annotated[str | None, Header()] = None):
     except ValueError:
         raise HTTPException(status_code=401, detail="Token is not valid")
 
-    if not token.active:
+    if not token.active_exp:
         raise HTTPException(status_code=403, detail="Token is not active")
-
-    if token.refresh_exp < datetime.now(tz=timezone.utc).timestamp():
-        raise HTTPException(status_code=403, detail="Token is expired")
 
     user = get_user(token.email)
     if not user:

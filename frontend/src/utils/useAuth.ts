@@ -4,13 +4,12 @@ import { jwtDecode } from "jwt-decode";
 import { useStore } from "./store";
 
 type _Token = {
+  id: string;
   sub: string;
   email: string;
   iat: number;
   exp: number;
-  refresh_exp: number;
-  active: boolean;
-  id: string;
+  active_exp: number;
 };
 
 type BasicAuth = {

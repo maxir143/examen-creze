@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import uuid4
 from datetime import datetime, timezone, timedelta
 from pydantic import BaseModel
@@ -8,13 +9,12 @@ from models.annotated import StrUUID
 
 
 class _Token(BaseModel):
+    id: StrUUID
     sub: str
     email: str
     iat: float
     exp: float
-    refresh_exp: float
-    active: bool
-    id: StrUUID
+    active_exp: Optional[float] = None
 
 
 settings = Settings()
@@ -31,15 +31,13 @@ def session_token(
         minutes=settings.REFRESH_TOKEN_EXPIRATION_MINUTES
     )
     token_id = uuid4()
-
     token = _Token(
         id=token_id,
         sub=user_id,
         email=email,
         iat=created_at.timestamp(),
-        exp=expires_at.timestamp(),
-        refresh_exp=refresh_expires_at.timestamp(),
-        active=active,
+        exp=refresh_expires_at.timestamp(),
+        active_exp=expires_at.timestamp() if active else None,
     )
     return jwt.encode(token.model_dump(), settings.TOKEN_SECRET_KEY, algorithm="HS256")
 
@@ -55,8 +53,10 @@ def activate_token(token_string: str, otp: str) -> str:
 
     if not otp_instance.verify(otp):
         raise ValueError("OTP is not valid")
-
-    token.active = True
+    expires_at = datetime.now(timezone.utc) + timedelta(
+        minutes=settings.TOKEN_EXPIRATION_MINUTES
+    )
+    token.active_exp = expires_at.timestamp()
 
     return jwt.encode(token.model_dump(), settings.TOKEN_SECRET_KEY, algorithm="HS256")
 

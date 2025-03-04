@@ -3,11 +3,13 @@ import Layout from "../layouts/layout.astro";
 import { ProtectedRoute } from "../components/protect_route";
 import { LogOutButton } from "../components/log_out_button";
 import { TokenInfo } from "../components/token_info";
+import { TransactionButton } from "../components/transaction_button";
 ---
 
 <ProtectedRoute client:only>
   <Layout>
     <TokenInfo client:load />
+    <TransactionButton client:load />
     <LogOutButton client:load />
   </Layout>
 </ProtectedRoute>

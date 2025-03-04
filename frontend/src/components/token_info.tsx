@@ -12,20 +12,25 @@ export function TokenInfo() {
 
   const expires_at = new Date(token_object.exp * 1000)
   const created_at = new Date(token_object.iat * 1000)
-  const refresh_date = new Date(token_object.refresh_exp * 1000)
+  const active_until = new Date(token_object.active_exp * 1000)
 
   return (<>
-    <ul className="text-center gap-2 flex flex-col ">
-      <li >Welcome back! {token_object.email}</li>
-      <li>Token id: {token_object.id}</li>
-      <li >This token was created {created_at.toLocaleDateString()} at {created_at.toLocaleTimeString()}</li>
-      <li >This token expires  {expires_at.toLocaleDateString()} at {expires_at.toLocaleTimeString()}</li>
-      <li >This token can be refreshed until {refresh_date.toLocaleDateString()} at {refresh_date.toLocaleTimeString()}</li>
+    <h2 className="text-center" >Welcome back! <b>{token_object.email}</b></h2>
+    <ul className="flex flex-col list-disc gap-4">
+
+      <li>Token id: <small className="ms-2">{token_object.id}</small></li>
+
+      <li>Token createt at: <small className="ms-2">{created_at.toLocaleString()}</small> </li>
+
+      <li>Token expires at: <small className="ms-2">{expires_at.toLocaleString()}</small>  </li>
+
+      <li>Token active until: <small className="ms-2">{active_until.toLocaleString()}</small> </li>
+
     </ul>
-    <button className="btn w-1/4 mx-auto"
+    <button className="btn"
       onClick={() => location.reload()}
     >
-      Reload window
+      Refresh token
     </button>
   </>)
 }

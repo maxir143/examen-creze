@@ -4,7 +4,7 @@ import { navigate } from "astro:transitions/client";
 
 
 export function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Element | undefined {
-  const { getToken, removeToken, verifyToken, refreshToken } = useAuth();
+  const { getToken, removeToken, verifyToken } = useAuth();
 
   const token_object = getToken();
 
@@ -13,7 +13,7 @@ export function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Ele
     return
   }
 
-  if (token_object.active === false) {
+  if (!token_object.active_exp) {
     navigate("/otp");
     return
   }

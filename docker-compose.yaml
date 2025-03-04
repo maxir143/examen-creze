@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_NAME="database.db"
+      - TOKEN_SECRET_KEY="secret_key"
+      - OTP_SECRET_KEY="JBSWY3DPEHPK3PXP"
+      - OTP_ISSUER_NAME="creze.com"
+      - TOKEN_EXPIRATION_MINUTES=5
+    ports:
+      - 8000:8000
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      - API_URL=http://backend:8000
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend

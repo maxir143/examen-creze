@@ -17,6 +17,7 @@ pillow = "^11.1.0"
 python-dotenv = "^1.0.1"
 peewee = "^3.17.9"
 pydantic-settings = "^2.8.1"
+uvicorn = "^0.34.0"
 
 
 [build-system]

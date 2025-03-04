@@ -25,6 +25,7 @@ def _test_transaction(x_token: Annotated[str | None, Header()] = None):
         raise HTTPException(status_code=403, detail="Token is expired")
 
     user = get_user(token.email)
+
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 

@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -27,12 +28,13 @@ app = FastAPI(
     docs_url=f"{settings.BASE_PATH}/docs",
     openapi_url=f"{settings.BASE_PATH}/docs/json",
 )
-app.middleware("http")(error_handler)
 app.exception_handlers = {
     HTTPException: HTTPException_handler,
-    ValidationError: ValidationError_handler,
     StarletteHTTPException: HTTPException_handler,
+    ValidationError: ValidationError_handler,
+    RequestValidationError: ValidationError_handler,
 }
+app.middleware("http")(error_handler)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

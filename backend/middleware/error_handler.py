@@ -30,7 +30,7 @@ async def error_handler(request: Request, call_next):
 
 
 def ValidationError_handler(_: Request, e: ValidationError):
-    response_details = {error.get("loc"): error.get("msg") for error in e.errors()}
+    response_details = {error.get("loc")[-1]: error.get("msg") for error in e.errors()}
     return _ErrorResponse(error=str(response_details), status_code=400)
 
 

@@ -9,9 +9,12 @@ class _BaseResponse(BaseModel):
 
 
 class ErrorResponse(_BaseResponse):
-    error: str = Field(description="Error message")
+    error: str = Field(
+        description="Description of the error",
+        examples=["This error occurred because..."],
+    )
 
 
 class SuccessResponse(_BaseResponse):
-    message: str = Field(default="Success operation", description="Operation details")
+    message: str = Field("Success operation", description="Operation details")
     data: Optional[dict] = Field(None, description="Operation data")

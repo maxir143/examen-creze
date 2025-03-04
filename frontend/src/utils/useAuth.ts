@@ -19,14 +19,17 @@ type _BasicAuth = {
 export function useAuth() {
   const { token, setToken, removeToken } = useStore();
 
-  function getToken(token: string): _Token {
+  function getToken(): _Token | null {
+    if (!token) return null;
     return jwtDecode(token) as _Token;
   }
 
   async function login({
     email,
     password,
-  }: _BasicAuth): Promise<string | null> {
+  }: _BasicAuth): Promise<
+    { token: string; error: null } | { token: null; error: string }
+  > {
     return await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: {
@@ -45,15 +48,18 @@ export function useAuth() {
           throw new Error("Response do not contain token");
         }
 
-        return res_json.token;
+        return { token: res_json.token, error: null };
       })
       .catch((error) => {
         console.error(error);
-        return null;
+        return { token: null, error: error.message };
       });
   }
 
-  async function signUp({ email, password }: _BasicAuth): Promise<boolean> {
+  async function signUp({
+    email,
+    password,
+  }: _BasicAuth): Promise<{ success: boolean; error: string | null }> {
     return await fetch(`${API_URL}/sing-up`, {
       method: "POST",
       headers: {
@@ -63,18 +69,23 @@ export function useAuth() {
     })
       .then(async (res) => {
         if (res.ok) {
-          return true;
+          return { success: true, error: null };
         }
         throw new Error(await res.text());
       })
       .catch((error) => {
         console.error(error);
-        return false;
+        return { success: false, error: error.message };
       });
   }
 
-  async function verifyOTP(otp_code: number): Promise<string | null> {
-    if (!token) return null;
+  async function verifyOTP(
+    otp_code: string
+  ): Promise<{ token: string; error: null } | { token: null; error: string }> {
+    const { error, token } = verifyToken();
+    if (error) return { token: null, error: error };
+    if (!token) return { token: null, error: "No token found" };
+
     return await fetch(`${API_URL}/activate-token/${otp_code}`, {
       method: "GET",
       headers: {
@@ -93,16 +104,27 @@ export function useAuth() {
           throw new Error("Response do not contain token");
         }
 
-        return res_json.token;
+        return {
+          token: res_json.token,
+          error: null,
+        };
       })
       .catch((error) => {
         console.error(error);
-        return null;
+        return {
+          token: null,
+          error: error.message,
+        };
       });
   }
 
-  async function getOTPQRCode(): Promise<string | null> {
-    if (!token) return null;
+  async function getOTPQRCode(): Promise<
+    { otp_uri: string; error: null } | { otp_uri: null; error: string }
+  > {
+    const { error, token } = verifyToken();
+    if (error) return { otp_uri: null, error: error };
+    if (!token) return { otp_uri: null, error: "No token found" };
+
     return await fetch(`${API_URL}/activate-otp`, {
       method: "GET",
       headers: {
@@ -115,12 +137,26 @@ export function useAuth() {
           throw new Error(await res.text());
         }
         const res_json: { otp_uri: string; message: string } = await res.json();
-        return res_json.otp_uri;
+        return { otp_uri: res_json.otp_uri, error: null };
       })
       .catch((error) => {
         console.error(error);
-        return null;
+        return { otp_uri: null, error: error.message };
       });
+  }
+
+  function verifyToken():
+    | { token: string; error: null }
+    | { token: null; error: string } {
+    if (!token) return { token: null, error: "No token found" };
+    const token_object = getToken();
+    if (!token_object) return { token: null, error: "Cant get token object" };
+    const expiration_date = new Date(token_object.exp * 1000);
+    const now = new Date();
+    if (expiration_date < now) {
+      return { token: null, error: "Current token expired, please log in" };
+    }
+    return { token: token, error: null };
   }
 
   return {
@@ -132,5 +168,6 @@ export function useAuth() {
     getToken,
     verifyOTP,
     getOTPQRCode,
+    verifyToken,
   };
 }

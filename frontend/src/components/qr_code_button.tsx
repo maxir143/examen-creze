@@ -9,11 +9,12 @@ export function QRCodeButton() {
 
   async function getQRCode() {
     if (qr_uri) return
-    const uri = await getOTPQRCode()
-    if (!uri) {
-      return alert("Error getting QR code, pls try again")
+    const { error, otp_uri } = await getOTPQRCode()
+    if (!otp_uri) {
+      alert(error || "Error getting QR code, pls try again")
+      return
     }
-    set_qr_uri(uri)
+    set_qr_uri(otp_uri)
   }
 
   return <div className="flex flex-col gap-4">

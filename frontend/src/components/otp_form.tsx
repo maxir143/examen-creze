@@ -37,10 +37,9 @@ export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: 
       initialValues={initialValues}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         setSubmitting(true)
-        const otp: string = Object.keys(initialValues).reduce((prev, curr) => (prev + values[curr]), "")
-        const token = await verifyOTP(parseInt(otp))
+        const { error, token } = await verifyOTP(Object.keys(initialValues).reduce((prev, curr) => (prev + values[curr]), ""))
         if (!token) {
-          alert('OTP is not valid')
+          alert(error)
           setSubmitting(false)
           resetForm()
           focusElement("_otp_0")

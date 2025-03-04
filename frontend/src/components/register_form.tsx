@@ -29,19 +29,19 @@ export function RegisterForm() {
         }
         return errors
       }}
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
 
-        const signUpComplete = await signUp({
+        const { error, success } = await signUp({
           email: values.email,
           password: values.password
         })
 
-        if (!signUpComplete) {
-          alert('Sign up failed, please try again')
+        if (!success) {
           setSubmitting(false)
-
+          alert(error || "Error signing up, refresh and try again")
+          return
         }
-
+        resetForm()
         await navigate('/login')
       }}
     >

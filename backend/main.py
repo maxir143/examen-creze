@@ -94,7 +94,7 @@ def _login(request: _BasicAuth):
     password_valid = pbkdf2_sha256.verify(request.password, user.password_hash)
 
     if not password_valid:
-        create_login_attempt(request.email, request.password, False)
+        create_login_attempt(request.email, request.password)
         raise ValueError(f"Password is not valid, {5 - failed_attepts} attempts left")
 
     delete_login_attempts(user.email)

@@ -25,12 +25,12 @@ export function LoginForm() {
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true)
-        const token = await login({
+        const { token, error } = await login({
           email: values.email,
           password: values.password
         })
         if (!token) {
-          alert('Login failed')
+          alert(error || "Error logging in, refresh and try again")
           setSubmitting(false)
           return
         }

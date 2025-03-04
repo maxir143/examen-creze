@@ -1,12 +1,13 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import Layout from "../layouts/layout.astro";
 import { ProtectedRoute } from "../components/protect_route";
 import { LogOutButton } from "../components/log_out_button";
+import { TokenInfo } from "../components/token_info";
 ---
 
 <ProtectedRoute client:only>
   <Layout>
-    <h1 class="text-2xl text-center">Welcome back!</h1>
+    <TokenInfo client:load />
     <LogOutButton client:load />
   </Layout>
 </ProtectedRoute>

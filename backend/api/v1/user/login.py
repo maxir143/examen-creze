@@ -34,8 +34,9 @@ def _user_login(request: _Request):
         if datetime.fromisoformat(user.account_locked_until) >= datetime.now(
             tz=timezone.utc
         ):
-            raise ValueError(
-                f"User account is locked until: {user.account_locked_until} UTC"
+            raise HTTPException(
+                status_code=403,
+                detail=f"User account is locked until: {user.account_locked_until} UTC",
             )
 
         user.account_locked_until = None
@@ -47,13 +48,16 @@ def _user_login(request: _Request):
     if failed_attepts >= 5:
         user.account_locked_until = datetime.now(tz=timezone.utc) + timedelta(hours=1)
         user.save()
-        raise ValueError("User has been locked for 1 hour")
+        raise HTTPException(status_code=403, detail="User has been locked for 1 hour")
 
     password_valid = pbkdf2_sha256.verify(request.password, user.password_hash)
 
     if not password_valid:
         create_login_attempt(request.email, request.password)
-        raise ValueError(f"Password is not valid, {5 - failed_attepts} attempts left")
+        raise HTTPException(
+            status_code=401,
+            detail=f"Password is not valid, {5 - failed_attepts} attempts left",
+        )
 
     delete_login_attempts(user.email)
 

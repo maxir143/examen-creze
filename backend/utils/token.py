@@ -45,13 +45,8 @@ def session_token(
 
 
 def extract_token(token_string: str) -> _Token:
-    try:
-        token = jwt.decode(
-            token_string, settings.TOKEN_SECRET_KEY, algorithms=["HS256"]
-        )
-        return _Token(**token)
-    except Exception as e:
-        raise ValueError("Error decoding token")
+    token = jwt.decode(token_string, settings.TOKEN_SECRET_KEY, algorithms=["HS256"])
+    return _Token(**token)
 
 
 def activate_token(token_string: str, otp: str) -> str:

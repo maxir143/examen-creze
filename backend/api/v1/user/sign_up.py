@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from models.auth import BasicAuth
 from models.response import SuccessResponse
 from repository.users import create_user
@@ -21,7 +21,7 @@ class _Response(SuccessResponse):
 )
 def _user_sign_up(request: _Request):
     if not create_user(email=request.email, password=request.password):
-        raise ValueError("User cant be created")
+        raise HTTPException(status_code=400, detail="User cant be created")
     return SuccessResponse(
         message=f"User registered successfully with email: {request.email}"
     )

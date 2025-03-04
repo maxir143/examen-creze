@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, HTTPException, Header
 from models.response import SuccessResponse
 from repository.users import (
     get_user,
@@ -20,8 +20,10 @@ def _user_log_out(x_token: Annotated[str | None, Header()] = None):
     token = extract_token(x_token)
     user = get_user(token.email)
     if not user:
-        raise ValueError("User not found")
+        raise HTTPException(status_code=404, detail="User not found")
     if str(user.token_id) != str(token.id):
-        raise ValueError("Token is not valid, please login again")
+        raise HTTPException(
+            status_code=403, detail="Token is not valid, please login again"
+        )
     remove_token(token.email)
     return _Response(message="User logout successfully")

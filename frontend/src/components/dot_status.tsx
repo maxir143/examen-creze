@@ -1,8 +1,8 @@
 import { API_URL } from "astro:env/client"
 import { useEffect, useState } from "react"
 
-export function DotStatus({ delay = 5000 }: { delay?: number }) {
-  const [status, setStatus] = useState<boolean>(true)
+export function DotStatus({ delay = 1000 }: { delay?: number }) {
+  const [status, setStatus] = useState<boolean>(false)
 
   async function refresh(): Promise<void> {
     return await fetch(`${API_URL}/status`, {

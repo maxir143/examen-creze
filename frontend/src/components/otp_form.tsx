@@ -27,10 +27,6 @@ export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: 
 
   useEffect(() => {
     focusElement(`_otp_${fields[0]}`)
-    const token = getToken()
-    if (!token) {
-      navigate('/login')
-    }
   }, [])
 
   return <div className='flex flex-col gap-4 w-full h-1/3'>

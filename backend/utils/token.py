@@ -1,28 +1,10 @@
-from typing import Annotated, Union
-from uuid import UUID, uuid4
+from uuid import uuid4
 from datetime import datetime, timezone, timedelta
-from pydantic import BaseModel, PlainSerializer, PlainValidator, WithJsonSchema
+from pydantic import BaseModel
 from jose import jwt
 import pyotp
 from config import Settings
-
-
-StrUUID = Annotated[
-    UUID,
-    PlainSerializer(str, return_type=str),
-    PlainValidator(
-        lambda x: UUID(x, version=4) if isinstance(x, str) else x,
-        json_schema_input_type=Union[str, UUID],
-    ),
-    WithJsonSchema(
-        {
-            "type": "string",
-            "format": "uuid",
-            "description": "UUID v4",
-        },
-        mode="serialization",
-    ),
-]
+from models.annotated import StrUUID
 
 
 class _Token(BaseModel):
@@ -63,8 +45,13 @@ def session_token(
 
 
 def extract_token(token_string: str) -> _Token:
-    token = jwt.decode(token_string, settings.TOKEN_SECRET_KEY, algorithms=["HS256"])
-    return _Token(**token)
+    try:
+        token = jwt.decode(
+            token_string, settings.TOKEN_SECRET_KEY, algorithms=["HS256"]
+        )
+        return _Token(**token)
+    except Exception as e:
+        raise ValueError("Error decoding token")
 
 
 def activate_token(token_string: str, otp: str) -> str:

@@ -13,7 +13,7 @@ type _Token = {
   id: string;
 };
 
-type _BasicAuth = {
+type BasicAuth = {
   email: string;
   password: string;
 };
@@ -40,7 +40,7 @@ export function useAuth() {
   async function login({
     email,
     password,
-  }: _BasicAuth): Promise<
+  }: BasicAuth): Promise<
     { token: string; error: null } | { token: null; error: string }
   > {
     return await fetch(`${API_URL}/user/login`, {
@@ -72,7 +72,7 @@ export function useAuth() {
   async function signUp({
     email,
     password,
-  }: _BasicAuth): Promise<{ success: boolean; error: string | null }> {
+  }: BasicAuth): Promise<{ success: boolean; error: string | null }> {
     return await fetch(`${API_URL}/user/sing-up`, {
       method: "POST",
       headers: {

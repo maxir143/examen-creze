@@ -1,6 +1,7 @@
 import { navigate } from 'astro:transitions/client'
 import { Field, Form, Formik } from 'formik'
 import { useAuth } from '../utils/useAuth';
+import { ToastContainer, toast } from 'react-toastify';
 
 export function LoginForm() {
 
@@ -35,7 +36,7 @@ export function LoginForm() {
           password: values.password
         })
         if (!token) {
-          alert(error || "Error logging in, refresh and try again")
+          toast.error(error || "Error logging in, refresh and try again")
           setSubmitting(false)
           return
         }
@@ -66,5 +67,6 @@ export function LoginForm() {
         </Form>
       )}
     </Formik>
+    <ToastContainer />
   </div>
 }

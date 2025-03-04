@@ -22,7 +22,6 @@ export function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Ele
 
   if (error) {
     removeToken()
-    alert(error);
     navigate("/login");
   }
 

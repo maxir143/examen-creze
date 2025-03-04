@@ -1,6 +1,7 @@
 import { Field, Form, Formik } from 'formik'
 import { useAuth } from '../utils/useAuth';
 import { navigate } from 'astro:transitions/client';
+import { ToastContainer, toast } from 'react-toastify';
 
 export function RegisterForm() {
 
@@ -40,7 +41,7 @@ export function RegisterForm() {
 
         if (!success) {
           setSubmitting(false)
-          alert(error || "Error signing up, refresh and try again")
+          toast.error(error || "Error signing up, refresh and try again")
           return
         }
         resetForm()
@@ -74,5 +75,6 @@ export function RegisterForm() {
         </Form>
       )}
     </Formik>
+    <ToastContainer />
   </div>
 }

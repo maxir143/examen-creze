@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useAuth } from "../utils/useAuth"
 import QRCode from "react-qr-code"
+import { ToastContainer, toast } from 'react-toastify'
 
 export function QRCodeButton() {
   const { getOTPQRCode } = useAuth()
@@ -11,7 +12,7 @@ export function QRCodeButton() {
     if (qr_uri) return
     const { error, otp_uri } = await getOTPQRCode()
     if (!otp_uri) {
-      alert(error || "Error getting QR code, pls try again")
+      toast.error(error || "Error getting QR code, pls try again")
       return
     }
     set_qr_uri(otp_uri)
@@ -24,5 +25,6 @@ export function QRCodeButton() {
       <QRCode value={qr_uri} size={300} className="mx-auto" />
 
     </>}
+    <ToastContainer />
   </div>
 }

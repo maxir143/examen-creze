@@ -36,8 +36,6 @@ export function TransactionButton() {
       toast.error(error);
     }
 
-
-
     setLoading(false);
   }
 

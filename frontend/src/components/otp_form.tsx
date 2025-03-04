@@ -2,6 +2,7 @@ import { navigate } from 'astro:transitions/client'
 import { Field, Form, Formik } from 'formik'
 import { useAuth } from '../utils/useAuth';
 import { useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: string[] }) {
   const { verifyOTP, setToken } = useAuth();
@@ -38,7 +39,7 @@ export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: 
         setSubmitting(true)
         const { error, token } = await verifyOTP(Object.keys(initialValues).reduce((prev, curr) => (prev + values[curr]), ""))
         if (!token) {
-          alert(error)
+          toast.error(error || "Invalid OTP, try again")
           setSubmitting(false)
           resetForm()
           focusElement("_otp_0")
@@ -76,5 +77,6 @@ export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: 
         </Form>
       )}
     </Formik>
+    <ToastContainer />
   </div >
 }

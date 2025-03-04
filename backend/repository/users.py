@@ -57,5 +57,4 @@ def get_login_attempts(email: str, from_minutes_ago: int) -> Optional[int]:
             .count()
         )
     except Exception as e:
-        print("Login record not found", e)
         return None

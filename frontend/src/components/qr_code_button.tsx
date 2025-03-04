@@ -21,7 +21,7 @@ export function QRCodeButton() {
     <button disabled={!!qr_uri} className="btn text-xs" onClick={getQRCode}> need a QR code ?</button>
     {qr_uri && <>
       <h1 className="text-center">Scan the QR to get yout OTP code</h1>
-      <QRCode value={qr_uri} size={200} className="mx-auto" />
+      <QRCode value={qr_uri} size={300} className="mx-auto" />
 
     </>}
   </div>

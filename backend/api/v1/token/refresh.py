@@ -33,7 +33,6 @@ def _token_refresh(x_token: Annotated[str | None, Header()] = None):
     user = get_user(token.email)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    print(user.token_id, token.id)
 
     if str(user.token_id) != str(token.id):
         raise HTTPException(status_code=403, detail="Token is not valid anymore")

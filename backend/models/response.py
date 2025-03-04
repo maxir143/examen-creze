@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 import uuid
 from pydantic import BaseModel, Field
 from models.annotated import StrUUID
@@ -17,4 +17,4 @@ class ErrorResponse(_BaseResponse):
 
 class SuccessResponse(_BaseResponse):
     message: str = Field("Success operation", description="Operation details")
-    data: Optional[dict] = Field(None, description="Operation data")
+    data: Optional[Union[dict, BaseModel]] = Field(None, description="Operation data")

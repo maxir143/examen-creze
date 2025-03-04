@@ -55,13 +55,16 @@ export function useAuth() {
           throw new Error(await res.text());
         }
 
-        const res_json: { token: string; message: string } = await res.json();
+        const res_json: { message: string; data?: { token?: string } } =
+          await res.json();
 
-        if (!res_json.token) {
+        const token = res_json?.data?.token;
+
+        if (!token) {
           throw new Error("Response do not contain token");
         }
 
-        return { token: res_json.token, error: null };
+        return { token, error: null };
       })
       .catch((error) => {
         console.error(error);
@@ -73,7 +76,7 @@ export function useAuth() {
     email,
     password,
   }: BasicAuth): Promise<{ success: boolean; error: string | null }> {
-    return await fetch(`${API_URL}/v1/user/sing-up`, {
+    return await fetch(`${API_URL}/v1/user/sign-up`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -111,14 +114,17 @@ export function useAuth() {
           throw new Error(await res.text());
         }
 
-        const res_json: { token: string; message: string } = await res.json();
+        const res_json: { message: string; data?: { token?: string } } =
+          await res.json();
 
-        if (!res_json.token) {
+        const token = res_json?.data?.token;
+
+        if (!token) {
           throw new Error("Response do not contain token");
         }
 
         return {
-          token: res_json.token,
+          token,
           error: null,
         };
       })
@@ -148,8 +154,13 @@ export function useAuth() {
         if (!res.ok) {
           throw new Error(await res.text());
         }
-        const res_json: { token: string; message: string } = await res.json();
-        return { token: res_json.token, error: null };
+        const res_json: { message: string; data?: { token?: string } } =
+          await res.json();
+        const token = res_json?.data?.token;
+        if (!token) {
+          throw new Error("Response do not contain token");
+        }
+        return { token, error: null };
       })
       .catch((error) => {
         console.error(error);
@@ -175,8 +186,14 @@ export function useAuth() {
         if (!res.ok) {
           throw new Error(await res.text());
         }
-        const res_json: { otp_uri: string; message: string } = await res.json();
-        return { otp_uri: res_json.otp_uri, error: null };
+        const res_json: { message: string; data?: { otp_uri?: string } } =
+          await res.json();
+        const otp_uri = res_json?.data?.otp_uri;
+
+        if (!otp_uri) {
+          throw new Error("Response do not contain otp_uri");
+        }
+        return { otp_uri, error: null };
       })
       .catch((error) => {
         console.error(error);

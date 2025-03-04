@@ -1,4 +1,5 @@
 FROM node:lts AS runtime
+
 WORKDIR /app
 
 COPY . .
@@ -6,8 +7,6 @@ COPY . .
 ENV API_URL=${API_URL}
 
 RUN npm install
-RUN npm run build
-
 
 EXPOSE 8000
 

@@ -16,8 +16,11 @@ export function OTPForm({
     .reduce((prev, curr) => ({ ...prev, ...curr }), {})
 
   function handleChange(e: any, values: any, setValues: any, focus?: string) {
-    const next_value = Math.max(0, Math.min(9, e.target.value))
-    setValues({ ...values, [e.target.name]: next_value })
+    if (e.target.value !== "") {
+      const next_value = Math.max(0, Math.min(9, e.target.value))
+      const single_digit = parseInt(next_value.toString().slice(0, 1))
+      setValues({ ...values, [e.target.name]: single_digit })
+    }
     focusElement(focus)
   }
 
@@ -57,9 +60,8 @@ export function OTPForm({
           setSubmitting(false)
         }}
       >
-        {({ isSubmitting, values, setValues, errors }) => (
+        {({ isSubmitting, values, setValues, errors, resetForm }) => (
           <Form className="flex flex-col gap-4 justify-between h-full">
-            <input />
             <div className="grid grid-cols-6 gap-4 max-w-[500px] mx-auto">
               {Object.keys(initialValues).map((_, i) => (
                 <Field
@@ -71,18 +73,37 @@ export function OTPForm({
                   key={`_otp_${i}`}
                   min="0"
                   max="9"
-                  onChange={(e: any) =>
+                  onChange={(e: any) => {
                     handleChange(e, values, setValues, `_otp_${i + 1}`)
+                    if (i === fields.length - 1) {
+                      focusElement('submit_button')
+                    }
                   }
-                  onClick={(e: any) => (e.target.value = '')}
+
+                  }
+                  onSelect={(e: any) => (setValues({ ...values, [e.target.name]: '' }))}
+                  onKeyUp={(e: any) => {
+                    if (e.key === 'Backspace') {
+                      if (i > 0) {
+                        setValues({ ...values, [e.target.name]: '' })
+                        handleChange(e, values, setValues, `_otp_${i - 1}`)
+                      }
+                    }
+                  }}
                 />
               ))}
             </div>
             <button
               className="btn w-full"
-              name={`_otp_${fields.length}`}
+              name="submit_button"
               type="submit"
               disabled={isSubmitting}
+              onKeyUp={(e: any) => {
+                if (e.key === 'Backspace') {
+                  resetForm()
+                  focusElement(`_otp_${fields[0]}`)
+                }
+              }}
             >
               Submit
             </button>

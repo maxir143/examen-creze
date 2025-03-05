@@ -16,8 +16,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    environment:
-      - API_URL=http://localhost:3004/api
     ports:
       - 3005:8000
     depends_on:

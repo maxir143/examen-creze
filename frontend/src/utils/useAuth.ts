@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from 'react'
+import { useEffect } from 'react'
 import { API_URL } from 'astro:env/client'
 import { jwtDecode } from 'jwt-decode'
 import { useStore } from './store.ts'

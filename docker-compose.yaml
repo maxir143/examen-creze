@@ -11,13 +11,13 @@ services:
       - OTP_SECRET_KEY=JBSWY3DPEHPK3PXP
       - OTP_ISSUER_NAME=example.com
     ports:
-      - 3001:8000
+      - 3004:8000
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     environment:
-      - API_URL=http://localhost:3001/api
+      - API_URL=http://localhost:3004/api
     ports:
       - 3005:8000
     depends_on:

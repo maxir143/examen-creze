@@ -1,20 +1,23 @@
-import type { JSX } from "react";
-import { useAuth } from "@/utils/useAuth";
-import { navigate } from "astro:transitions/client";
+import type { JSX } from 'react'
+import { useAuth } from '@/utils/useAuth'
+import { navigate } from 'astro:transitions/client'
 
+export function ProtectedRoute({
+  children,
+}: {
+  children: JSX.Element
+}): JSX.Element | undefined {
+  const { getToken, removeToken, verifyToken } = useAuth()
 
-export function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Element | undefined {
-  const { getToken, removeToken, verifyToken } = useAuth();
-
-  const token_object = getToken();
+  const token_object = getToken()
 
   if (!token_object) {
-    navigate("/login");
+    navigate('/login')
     return
   }
 
   if (!token_object.active_exp) {
-    navigate("/otp");
+    navigate('/otp')
     return
   }
 
@@ -22,7 +25,7 @@ export function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Ele
 
   if (error) {
     removeToken()
-    navigate("/login");
+    navigate('/login')
   }
 
   return children

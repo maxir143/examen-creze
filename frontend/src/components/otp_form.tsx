@@ -1,18 +1,19 @@
 import { navigate } from 'astro:transitions/client'
 import { Field, Form, Formik } from 'formik'
-import { useAuth } from '@/utils/useAuth';
-import { useEffect } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { useAuth } from '@/utils/useAuth'
+import { useEffect } from 'react'
+import { ToastContainer, toast } from 'react-toastify'
 
-export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: string[] }) {
-  const { verifyOTP, setToken } = useAuth();
+export function OTPForm({
+  fields = ['0', '1', '2', '3', '4', '5'],
+}: {
+  fields?: string[]
+}) {
+  const { verifyOTP, setToken } = useAuth()
 
-  const initialValues: { [field: string]: string } = fields.map((field) => (
-    { [`_otp_${field}`]: "" }
-  )).reduce((prev, curr) => (
-    { ...prev, ...curr }
-  ), {})
-
+  const initialValues: { [field: string]: string } = fields
+    .map((field) => ({ [`_otp_${field}`]: '' }))
+    .reduce((prev, curr) => ({ ...prev, ...curr }), {})
 
   function handleChange(e: any, values: any, setValues: any, focus?: string) {
     const next_value = Math.max(0, Math.min(9, e.target.value))
@@ -30,53 +31,65 @@ export function OTPForm({ fields = ["0", "1", "2", "3", "4", "5"] }: { fields?: 
     focusElement(`_otp_${fields[0]}`)
   }, [])
 
-  return <div className='flex flex-col gap-4 w-full h-1/3'>
-    <Formik
-      validateOnChange
-      validateOnBlur
-      initialValues={initialValues}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
-        setSubmitting(true)
-        const { error, token } = await verifyOTP(Object.keys(initialValues).reduce((prev, curr) => (prev + values[curr]), ""))
-        if (!token) {
-          toast.error(error || "Invalid OTP, try again")
+  return (
+    <div className="flex flex-col gap-4 w-full h-1/3">
+      <Formik
+        validateOnChange
+        validateOnBlur
+        initialValues={initialValues}
+        onSubmit={async (values, { setSubmitting, resetForm }) => {
+          setSubmitting(true)
+          const { error, token } = await verifyOTP(
+            Object.keys(initialValues).reduce(
+              (prev, curr) => prev + values[curr],
+              '',
+            ),
+          )
+          if (!token) {
+            toast.error(error || 'Invalid OTP, try again')
+            setSubmitting(false)
+            resetForm()
+            focusElement('_otp_0')
+            return
+          }
+          setToken(token)
+          await navigate('/protected')
           setSubmitting(false)
-          resetForm()
-          focusElement("_otp_0")
-          return
-        }
-        setToken(token)
-        await navigate('/protected')
-        setSubmitting(false)
-      }}
-    >
-      {({ isSubmitting, values, setValues, errors }) => (
-        <Form className='flex flex-col gap-4 justify-between h-full'>
-          <input />
-          <div className='grid grid-cols-6 gap-4 max-w-[500px] mx-auto'>
-            {
-              Object.keys(initialValues).map((_, i) => (
+        }}
+      >
+        {({ isSubmitting, values, setValues, errors }) => (
+          <Form className="flex flex-col gap-4 justify-between h-full">
+            <input />
+            <div className="grid grid-cols-6 gap-4 max-w-[500px] mx-auto">
+              {Object.keys(initialValues).map((_, i) => (
                 <Field
-                  className={`input validator w-full text-center ${errors[`_otp_${i}`] ? 'input-error' : 'validator'}`} required
+                  className={`input validator w-full text-center ${errors[`_otp_${i}`] ? 'input-error' : 'validator'}`}
+                  required
                   placeholder="0"
                   type="number"
                   name={`_otp_${i}`}
                   key={`_otp_${i}`}
                   min="0"
                   max="9"
-                  onChange={(e: any) => handleChange(e, values, setValues, `_otp_${i + 1}`)}
-                  onClick={(e: any) => e.target.value = ""}
+                  onChange={(e: any) =>
+                    handleChange(e, values, setValues, `_otp_${i + 1}`)
+                  }
+                  onClick={(e: any) => (e.target.value = '')}
                 />
-
-              ))
-            }
-          </div>
-          <button className='btn w-full' name={`_otp_${fields.length}`} type="submit" disabled={isSubmitting}>
-            Submit
-          </button>
-        </Form>
-      )}
-    </Formik>
-    <ToastContainer />
-  </div >
+              ))}
+            </div>
+            <button
+              className="btn w-full"
+              name={`_otp_${fields.length}`}
+              type="submit"
+              disabled={isSubmitting}
+            >
+              Submit
+            </button>
+          </Form>
+        )}
+      </Formik>
+      <ToastContainer />
+    </div>
+  )
 }

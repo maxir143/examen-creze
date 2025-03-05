@@ -1,11 +1,11 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 type _Store = {
-  token: string | null;
-  setToken: (token: string) => void;
-  removeToken: () => void;
-};
+  token: string | null
+  setToken: (token: string) => void
+  removeToken: () => void
+}
 
 export const useStore = create<_Store>()(
   persist(
@@ -15,8 +15,8 @@ export const useStore = create<_Store>()(
       removeToken: () => set({ token: null }),
     }),
     {
-      name: "auth-storage",
+      name: 'auth-storage',
       storage: createJSONStorage(() => localStorage),
-    }
-  )
-);
+    },
+  ),
+)

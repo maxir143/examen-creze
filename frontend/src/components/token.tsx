@@ -7,8 +7,6 @@ export function ActivateToken() {
   )
 }
 
-
-
 export function RegisterOTP() {
   return <div></div>
 }

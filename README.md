@@ -57,7 +57,7 @@
 
 6. Visitar el frontend desplegado en [localhost](http://localhost:3005/).
 
-> Para mas información sobre la documentación técnica de la api visitar [documentación](http://localhost:3001/api/docs).
+> Para mas información sobre la documentación técnica de la api visitar [documentación](http://localhost:3004/api/docs).
 
 ### configuración OTP
 

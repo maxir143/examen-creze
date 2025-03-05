@@ -5,22 +5,24 @@ import { ToastContainer, toast } from 'react-toastify'
 
 export function QRCodeButton() {
   const { getOTPQRCode } = useAuth()
-
   const [qr_uri, set_qr_uri] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   async function getQRCode() {
     if (qr_uri) return
+    setLoading(true)
     const { error, otp_uri } = await getOTPQRCode()
     if (!otp_uri) {
       toast.error(error || 'Error getting QR code, pls try again')
       return
     }
     set_qr_uri(otp_uri)
+    setLoading(false)
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <button disabled={!!qr_uri} className="btn text-xs" onClick={getQRCode}>
+      <button disabled={!!qr_uri || loading} className="btn text-xs" onClick={getQRCode}>
 
         need a QR code ?
       </button>

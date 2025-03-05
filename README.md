@@ -2,6 +2,14 @@
 
 [Demo](http://145.223.75.232:3005/login)
 
+Rutas:
+- /login
+- /sing-up
+- /otp
+- /protected
+
+[API Docs](http://145.223.75.232:3004/api/docs)
+
 ## Descripción del Proyecto
 
 > En Creze, la seguridad de la información y la protección de los datos de nuestros clientes son de

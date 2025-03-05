@@ -1,4 +1,4 @@
-import { useAuth } from '../utils/useAuth'
+import { useAuth } from '@/utils/useAuth.ts'
 
 export function TokenInfo() {
   const { getToken } = useAuth()

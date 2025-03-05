@@ -1,5 +1,5 @@
 import type { JSX } from 'react'
-import { useAuth } from '@/utils/useAuth'
+import { useAuth } from '@/utils/useAuth.ts'
 import { navigate } from 'astro:transitions/client'
 
 export function ProtectedRoute({

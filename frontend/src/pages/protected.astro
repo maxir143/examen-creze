@@ -1,9 +1,9 @@
 ---
 import Layout from '@/layouts/layout.astro'
-import { ProtectedRoute } from '@/components/protect_route'
-import { LogOutButton } from '@/components/log_out_button'
-import { TokenInfo } from '@/components/token_info'
-import { TransactionButton } from '@/components/transaction_button'
+import { ProtectedRoute } from '@/components/protect_route.tsx'
+import { LogOutButton } from '@/components/log_out_button.tsx'
+import { TokenInfo } from '@/components/token_info.tsx'
+import { TransactionButton } from '@/components/transaction_button.tsx'
 ---
 
 <ProtectedRoute client:only>

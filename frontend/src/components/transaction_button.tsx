@@ -1,6 +1,6 @@
 import { API_URL } from 'astro:env/client'
 import { useState } from 'react'
-import { useAuth } from '../utils/useAuth'
+import { useAuth } from '@/utils/useAuth.ts'
 import { ToastContainer, toast } from 'react-toastify'
 
 export function TransactionButton() {

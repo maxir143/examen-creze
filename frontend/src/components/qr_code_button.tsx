@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAuth } from '@/utils/useAuth'
+import { useAuth } from '@/utils/useAuth.ts'
 import QRCode from 'react-qr-code'
 import { ToastContainer, toast } from 'react-toastify'
 

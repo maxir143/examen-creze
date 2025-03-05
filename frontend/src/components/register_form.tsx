@@ -1,5 +1,5 @@
 import { Field, Form, Formik } from 'formik'
-import { useAuth } from '@/utils/useAuth'
+import { useAuth } from '@/utils/useAuth.ts'
 import { navigate } from 'astro:transitions/client'
 import { ToastContainer, toast } from 'react-toastify'
 

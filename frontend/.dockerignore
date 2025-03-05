@@ -2,9 +2,6 @@
 
 **/**.vscode
 
-# generated types
-.astro/
-
 # dependencies
 .DS_Store
 node_modules

@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'IAM policy and group for nolab team to manage Cognito User Pool users'
+
+Parameters:
+  CognitoUserPoolArn:
+    Type: String
+    Default: 'arn:aws:cognito-idp:us-east-2:410450514243:userpool/us-east-2_h3oulDqdO'
+    Description: 'ARN of the Cognito User Pool'
+  
+  UserName:
+    Type: String
+    Default: 'joahan'
+    Description: 'IAM user to add to the nolab team group'
+
+Resources:
+  NoLabTeamCognitoPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: 'NoLabTeamCognitoAdminCreateUser'
+      Description: 'Policy to allow nolab team to create users in Cognito User Pool'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'cognito-idp:AdminCreateUser'
+            Resource:
+              - !Ref CognitoUserPoolArn
+
+  NoLabTeamGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: 'nolab-team'
+      ManagedPolicyArns:
+        - !Ref NoLabTeamCognitoPolicy
+
+  JoahanUserGroupMembership:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref NoLabTeamGroup
+      Users:
+        - !Ref UserName
+
+Outputs:
+  PolicyArn:
+    Description: 'ARN of the IAM policy for nolab team Cognito access'
+    Value: !Ref NoLabTeamCognitoPolicy
+    Export:
+      Name: !Sub '${AWS::StackName}-NoLabTeamCognitoPolicy-Arn'
+  
+  GroupName:
+    Description: 'Name of the IAM group for nolab team'
+    Value: !Ref NoLabTeamGroup
+    Export:
+      Name: !Sub '${AWS::StackName}-NoLabTeamGroup-Name'

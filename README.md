@@ -87,5 +87,21 @@
 
 ---
 
+## AWS Infrastructure
+
+Esta aplicación incluye configuración de infraestructura para los permisos de AWS IAM necesarios para el equipo nolab.
+
+### Permisos de Cognito
+
+El directorio `infrastructure/` contiene la configuración necesaria para otorgar permisos de `cognito-idp:AdminCreateUser` al equipo nolab:
+
+- **Terraform**: `infrastructure/terraform/main.tf`
+- **CloudFormation**: `infrastructure/cloudformation/nolab-team-cognito-permissions.yaml`
+- **Política IAM**: `infrastructure/iam-policies/nolab-team-cognito-policy.json`
+
+Para más detalles sobre el despliegue, consultar [infrastructure/README.md](infrastructure/README.md).
+
+---
+
 🗣️ Aviso:
 _Debido a la complejidad del examen y al poco tiempo que dispongo para realizarlo, decidí usar el framework [FastAPI](https://fastapi.tiangolo.com/) con el cual hoy en dia laboro y por tanto mas cómodo me siento para realizar la prueba._

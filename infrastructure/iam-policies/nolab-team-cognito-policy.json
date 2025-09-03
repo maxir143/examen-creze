@@ -1,0 +1,14 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cognito-idp:AdminCreateUser"
+      ],
+      "Resource": [
+        "arn:aws:cognito-idp:us-east-2:410450514243:userpool/us-east-2_h3oulDqdO"
+      ]
+    }
+  ]
+}

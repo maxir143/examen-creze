@@ -13,7 +13,7 @@ python-jose = {extras = ["cryptography"], version = "^3.4.0"}
 passlib = "^1.7.4"
 pyotp = "^2.9.0"
 qrcode = "^8.0"
-pillow = "^11.1.0"
+pillow = "^12.1.1"
 python-dotenv = "^1.0.1"
 peewee = "^3.17.9"
 pydantic-settings = "^2.8.1"
